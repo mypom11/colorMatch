@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .canvas{
+            background: #ddd;
+        }
+        ul{
+            display: flex;
+        }
+        li{
+            list-style: none;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>색상 맞추기 게임</h2>
+    <canvas class="canvas" width="600" height="400"></canvas>
+    <ul>
+        <li><button data-stage="stage1">stage1</button></li>
+        <li><button data-stage="stage2">stage2</button></li>
+        <li><button data-stage="stage3">stage3</button></li>
+        <li><button data-stage="stage4">stage4</button></li>
+    </ul>
+    <script>
+        const canvas = document.querySelector('.canvas');
+        const ctx = canvas.getContext('2d');
+        const buttons = document.querySelector('ul')
+        let drawingMode;
+        let MainColor;
+        let MainColorPositionX;
+        let MainColorPositionY;
+        let MainColorWidth;
+        let colorSwitch = false;
+        let stageClear;
+        let currentStage;
+        const imgElem = new Image();
+
+        function buttonEvent(e){
+            let stage = e.target.dataset.stage
+            if(stage == 'stage1'){
+                stage1();
+            }
+        }
+
+        buttons.addEventListener('click', buttonEvent)
+
+
+
+        function stage1(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            currentStage = 'stage1'
+            MainColorPositionX = 100;
+            MainColorPositionY = 100;
+            MainColorWidth = 20;
+            MainColor = 'blue';
+            imgElem.src = 'images/green.png'
+            
+            imgElem.addEventListener('load',()=>{
+                ctx.drawImage(imgElem, 400, 50, 100, 100);
+            });
+
+            ctx.beginPath();
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(300, 0, 20, 200);
+
+            ctx.beginPath();
+            ctx.fillStyle = 'yellow';
+            ctx.fillRect(300, 200, 20, 200);
+
+            ctx.beginPath();
+            ctx.fillStyle = MainColor;
+            ctx.arc(MainColorPositionX, MainColorPositionY, MainColorWidth, 0, Math.PI*2, false);
+            ctx.fill();
+        }
+
+
+        function upHandler(e){
+            drawingMode = false;
+            colorSwitch = false;
+        }
+        function downHandler(e){
+            if(e.layerX >= MainColorPositionX-MainColorWidth 
+            && e.layerX < MainColorPositionX+MainColorWidth 
+            && e.layerY <= MainColorPositionY+MainColorWidth 
+            && e.layerY > MainColorPositionX-MainColorWidth){
+                drawingMode = true;
+                ctx.fillStyle = MainColor
+            }
+            return;
+        }
+
+        function clickHandler(e){
+            if(!drawingMode){
+                return;
+            }
+            ctx.beginPath();
+            ctx.arc(e.layerX, e.layerY, 10, 0, Math.PI*2, false);
+            ctx.fill();
+            if(currentStage == 'stage1'){
+                if(colorSwitch){
+                    ctx.fillStyle = "green"
+                }
+                if(e.layerX == 300 && e.layerY >= 200){
+                    colorSwitch = true;
+                }
+                if(colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
+                    stageClear = true;
+                }
+            }
+        }
+        canvas.addEventListener('mousedown', downHandler);
+        canvas.addEventListener('mouseup', upHandler);
+        canvas.addEventListener('mousemove', clickHandler);
+    </script>
+
+</body>
+</html>
