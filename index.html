@@ -384,29 +384,10 @@
 
 
         //모바일 동작
-        touch = event.changedTouches[0]; // get the position information
-        if(type === "touchmove"){        
-            mouseEventType = "mousemove";   // get the name of the mouse event
-                                            // this touch will emulate   
-        }else
-        if(type === "touchstart"){  
-            mouseEventType = "mousedown";     // mouse event to create
-        }else
-        if(type === "touchend"){ 
-            mouseEventType = "mouseup";     // ignore mouse up if click only
-        }
-
-        var mouseEvent = new MouseEvent( // create event
-            mouseEventType,   // type of event
-            {
-                'view': event.target.ownerDocument.defaultView,
-                'bubbles': true,
-                'cancelable': true,
-                'screenX':touch.screenX,  // get the touch coords 
-                'screenY':touch.screenY,  // and add them to the 
-                'clientX':touch.clientX,  // mouse event
-                'clientY':touch.clientY,
-        });
+        canvas.addEventListener('touchstart', downHandler);
+        canvas.addEventListener('touchend', upHandler);
+        canvas.addEventListener('touchmove', moveHandler);
+        
     </script>
 
 </body>
