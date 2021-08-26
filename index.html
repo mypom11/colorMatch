@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        .canvas{
+        #canvas{
             background: #ddd;
         }
         ul{
@@ -20,15 +20,15 @@
 </head>
 <body>
     <h2>색상 맞추기 게임</h2>
-    <canvas class="canvas" width="600" height="400"></canvas>
+    <canvas id="canvas" width="600" height="400"></canvas>
     <ul>
-        <li><button data-stage="stage1">stage1</button></li>
-        <li><button data-stage="stage2">stage2</button></li>
-        <li><button data-stage="stage3">stage3</button></li>
-        <li><button data-stage="stage4">stage4</button></li>
+        <li><button data-stage="1">stage1</button></li>
+        <li><button data-stage="2">stage2</button></li>
+        <li><button data-stage="3">stage3</button></li>
+        <li><button data-stage="4">stage4</button></li>
     </ul>
     <script>
-        const canvas = document.querySelector('.canvas');
+        const canvas = document.querySelector('#canvas');
         const ctx = canvas.getContext('2d');
         const buttons = document.querySelector('ul')
         let drawingMode;
@@ -37,81 +37,187 @@
         let MainColorPositionY;
         let MainColorWidth;
         let colorSwitch = false;
-        let stageClear;
-        let currentStage;
+        let currentStage = 0;
+        let fail = false;
         let switchColor;
-        const imgElem = new Image();
+        let checkPoint1;
+        let checkPoint2;
+        let checkPoint3;
+        let checkPoint4;
+        let checkPoint5;
         
-
-
-        start()
-        // stage2()
+        selecter()
 
         function buttonEvent(e){
-            let stage = e.target.dataset.stage
-            if(stage == 'stage1'){
-                stage1();
-            }else if(stage == 'stage2'){
-                stage2()
+            currentStage = Number(e.target.dataset.stage);
+            selecter();
+        }
+
+        //render
+        function selecter(){
+            switch(currentStage){
+                case 0 :
+                    clear('COLOR MATCH GAME', 'START')
+                    break
+                case 1 : 
+                    stage1()
+                    break;
+                case 2 : 
+                    stage2()
+                    break;
+                case 3 : 
+                    stage3()
+                    break;
+                case 4 : 
+                    stage4()
+                    break;
             }
         }
 
+        //클리어조건
+        function stageClear(){
+            switch(currentStage){
+                case 1: 
+                    if(mouseX >= 300 && mouseX< 320 && mouseY >= 200){
+                        colorSwitch = true;
+                    }
+                    if(mouseX >= 420 && mouseX < 480 && mouseY <= 120 && mouseY > 80){
+                        if(colorSwitch){
+                            clear('CLEAR', 'Next Stage')
+                            drawingMode = false;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    break;
+                case 2:
+                    if(mouseY >= 300 && mouseY < 320){
+                        colorSwitch = true;
+                    }
+                    if(mouseX >= 420 && mouseX < 480 && mouseY <= 120 && mouseY > 80){
+                        if(colorSwitch){
+                            clear('CLEAR', 'Next Stage')
+                            drawingMode = false;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    break;
+                case 3:
+                    if(mouseX >= 200 && mouseX < 400 && mouseY >= 200 && mouseY < 220){
+                        colorSwitch = true;
+                    }
+                    if(mouseX >= 420 && mouseX < 480 && mouseY <= 120 && mouseY > 80){
+                        if(!colorSwitch){
+                            checkPoint1 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 120 && mouseX < 180 && mouseY <= 120 && mouseY > 80){
+                        if(!colorSwitch){
+                            checkPoint2 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 270 && mouseX < 310 && mouseY <= 120 && mouseY > 80){
+                        if(colorSwitch && checkPoint1 && checkPoint2){
+                            clear('CLEAR', 'Next Stage')
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    break;
+                case 4:
+                    if(mouseX >= 200 && mouseX < 400 && mouseY >= 50 && mouseY < 70){
+                        colorSwitch = true;
+                    }
+                    if(mouseX >= 470 && mouseX < 530 && mouseY <= 190 && mouseY > 150){
+                        if(!colorSwitch){
+                            checkPoint1 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 270 && mouseX < 330 && mouseY <= 190 && mouseY > 150){
+                        if(!colorSwitch){
+                            checkPoint2 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 70 && mouseX < 130 && mouseY <= 190 && mouseY > 150){
+                        if(!colorSwitch){
+                            checkPoint3 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 170 && mouseX < 230 && mouseY <= 190 && mouseY > 150){
+                        if(colorSwitch){
+                            checkPoint4 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(mouseX >= 370 && mouseX < 430 && mouseY <= 190 && mouseY > 150){
+                        if(colorSwitch){
+                            checkPoint5 = true;
+                        }else{
+                            clear('FAILED', 'RESTART')
+                            fail = true;
+                            drawingMode = false;
+                        }
+                    }
+                    if(checkPoint1 && checkPoint2 && checkPoint3 && checkPoint4 && checkPoint5){
+                        clear('FINISH', 'START')
+                    }
+                    break;
+            }
+        }
         buttons.addEventListener('click', buttonEvent)
 
-        function start(){
-            currentStage = 'start';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath()
-            ctx.font = 'bold 30px san-serif'
-            ctx.textAlign = 'center';
-            ctx.fillText("COLOR MATCH GAME", canvas.width/2, canvas.height/2-50);
-
-            ctx.beginPath()
-            ctx.strokeRect(250 ,200, 100, 30);
-
-            ctx.beginPath()
-            ctx.font = 'bold 20px san-serif'
-            ctx.fillText('START', 300, 220);
-        }
-
-        function clear(){
+        function clear(title, btn){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'black'
             ctx.beginPath()
             ctx.font = 'bold 30px san-serif'
             ctx.textAlign = 'center';
-            ctx.fillText("CLEAR", canvas.width/2, canvas.height/2-50);
+            ctx.fillText(title, canvas.width/2, canvas.height/2-50);
 
             ctx.beginPath()
             ctx.strokeRect(250 ,200, 100, 30);
 
             ctx.beginPath()
             ctx.font = 'bold 18px san-serif'
-            ctx.fillText('Next Stage', 300, 220);
+            ctx.fillText(btn, 300, 220);
         }
 
-        function failed(){
-            currentStage = 'failed'
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'black'
-            ctx.beginPath()
-            ctx.font = 'bold 30px san-serif'
-            ctx.textAlign = 'center';
-            ctx.fillText("FAILED", canvas.width/2, canvas.height/2-50);
-
-            ctx.beginPath()
-            ctx.strokeRect(250 ,200, 100, 30);
-
-            ctx.beginPath()
-            ctx.font = 'bold 18px san-serif'
-            ctx.fillText('RESTART', 300, 220);
-        }
-
+        //stage만들기
         function stage1(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            currentStage = 'stage1'
+            const imgElem = new Image();
             MainColorPositionX = 100;
-            MainColorPositionY = 100;
+            MainColorPositionY = 200;
             MainColorWidth = 20;
             MainColor = '#3232FF';
             imgElem.src = 'images/green.png'
@@ -137,7 +243,7 @@
 
         function stage2(){
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            currentStage = 'stage2'
+            const imgElem = new Image();
             MainColorPositionX = 100;
             MainColorPositionY = 100;
             MainColorWidth = 20;
@@ -150,12 +256,70 @@
             });
 
             ctx.beginPath();
-            ctx.fillStyle = '#FF0000';
-            ctx.fillRect(300, 0, 20, 200);
+            ctx.fillStyle = '#FFDC37';
+            ctx.fillRect(0, 300, canvas.width, 20);
+
+            ctx.beginPath();
+            ctx.fillStyle = MainColor;
+            ctx.arc(MainColorPositionX, MainColorPositionY, MainColorWidth, 0, Math.PI*2, false);
+            ctx.fill();
+        }
+
+        function stage3(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const imgElem = new Image();
+            const imgElem2 = new Image();
+            MainColorPositionX = 300;
+            MainColorPositionY = 300;
+            MainColorWidth = 20;
+            MainColor = '#3232FF';
+            imgElem.src = 'images/blue.png'
+            imgElem2.src ='images/green.png'
+            switchColor = '#52E252'
+            
+            imgElem.addEventListener('load',()=>{
+                ctx.drawImage(imgElem, 400, 50, 100, 100);
+                ctx.drawImage(imgElem, 100, 50, 100, 100);
+            });
+            imgElem2.addEventListener('load',()=>{
+                ctx.drawImage(imgElem2, 250, 50, 100, 100);
+            });
 
             ctx.beginPath();
             ctx.fillStyle = '#FFDC37';
-            ctx.fillRect(300, 200, 20, 200);
+            ctx.fillRect(200, 200, 200, 20);
+
+            ctx.beginPath();
+            ctx.fillStyle = MainColor;
+            ctx.arc(MainColorPositionX, MainColorPositionY, MainColorWidth, 0, Math.PI*2, false);
+            ctx.fill();
+        }
+
+        function stage4(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const imgElem = new Image();
+            const imgElem2 = new Image();
+            MainColorPositionX = 300;
+            MainColorPositionY = 300;
+            MainColorWidth = 20;
+            MainColor = '#FFDC37';
+            imgElem.src = 'images/yellow.png'
+            imgElem2.src ='images/orange.png'
+            switchColor = '#FFA500'
+            
+            imgElem.addEventListener('load',()=>{
+                ctx.drawImage(imgElem, 50, 120, 100, 100);
+                ctx.drawImage(imgElem, 250, 120, 100, 100);
+                ctx.drawImage(imgElem, 450, 120, 100, 100);
+            });
+            imgElem2.addEventListener('load',()=>{
+                ctx.drawImage(imgElem2, 150, 120, 100, 100);
+                ctx.drawImage(imgElem2, 350, 120, 100, 100);
+            });
+
+            ctx.beginPath();
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(200, 50, 200, 20);
 
             ctx.beginPath();
             ctx.fillStyle = MainColor;
@@ -166,27 +330,27 @@
         function upHandler(e){
             colorSwitch = false;
             drawingMode = false;
+            checkPoint1 = false;
+            checkPoint2 = false;
+            checkPoint3 = false;
+            checkPoint4 = false;
+            checkPoint5 = false;
         }
-        function downHandler(e){
-            console.log('X',e.layerX)
-            console.log('Y',e.layerY)
-            if(currentStage == 'start' 
-            && e.layerX >= 250 && e.layerX < 350
-            && e.layerY >= 200 && e.layerY < 230){
-                currentStage = 'stage1'
-                stage1()
-            }else if(currentStage == 'failed' 
-            && e.layerX >= 250 && e.layerX < 350
-            && e.layerY >= 200 && e.layerY < 230){
-                currentStage = 'stage1'
-                stage1()
-            }else if(currentStage == 'stage1' 
-            && e.layerX >= 250 && e.layerX < 350
-            && e.layerY >= 200 && e.layerY < 230){
-                currentStage = 'stage2'
-                stage2()
-            }
 
+        function downHandler(e){
+            if(e.layerX >= 250 && e.layerX < 350
+            && e.layerY >= 200 && e.layerY < 230){
+                if(fail){
+                    fail = false;
+                    selecter();
+                }else if(currentStage == 4){
+                    currentStage = 0
+                    selecter()
+                }else{
+                    currentStage++
+                    selecter()
+                }                 
+            }
             if(e.layerX >= MainColorPositionX-MainColorWidth 
             && e.layerX < MainColorPositionX+MainColorWidth 
             && e.layerY <= MainColorPositionY+MainColorWidth 
@@ -197,31 +361,26 @@
             return;
         }
 
-        function clickHandler(e){
+        let mouseX, mouseY
+        function moveHandler(e){
             if(!drawingMode){
                 return;
             }
+            mouseX = e.layerX;
+            mouseY = e.layerY;
             ctx.beginPath();
-            ctx.arc(e.layerX, e.layerY, 10, 0, Math.PI*2, false);
+            ctx.arc(mouseX, mouseY, 10, 0, Math.PI*2, false);
             ctx.fill();
             if(colorSwitch){
                 ctx.fillStyle = switchColor
             }
-            if(e.layerX >= 300 && e.layerX< 320 && e.layerY >= 200){
-                colorSwitch = true;
-            }
-            if(colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
-                clear()
-                drawingMode = false;
-            }
-            if(!colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
-                failed()
-                drawingMode = false;
-            }
+            stageClear()    
         }
+
+       
         canvas.addEventListener('mousedown', downHandler);
         canvas.addEventListener('mouseup', upHandler);
-        canvas.addEventListener('mousemove', clickHandler);
+        canvas.addEventListener('mousemove', moveHandler);
     </script>
 
 </body>
