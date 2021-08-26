@@ -39,17 +39,20 @@
         let colorSwitch = false;
         let stageClear;
         let currentStage;
+        let switchColor;
         const imgElem = new Image();
         
 
 
-        // start()
-        stage2()
+        start()
+        // stage2()
 
         function buttonEvent(e){
             let stage = e.target.dataset.stage
             if(stage == 'stage1'){
                 stage1();
+            }else if(stage == 'stage2'){
+                stage2()
             }
         }
 
@@ -88,6 +91,7 @@
         }
 
         function failed(){
+            currentStage = 'failed'
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'black'
             ctx.beginPath()
@@ -111,6 +115,7 @@
             MainColorWidth = 20;
             MainColor = '#3232FF';
             imgElem.src = 'images/green.png'
+            switchColor = '#52E252'
             
             imgElem.addEventListener('load',()=>{
                 ctx.drawImage(imgElem, 400, 50, 100, 100);
@@ -131,17 +136,46 @@
         }
 
         function stage2(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            currentStage = 'stage2'
+            MainColorPositionX = 100;
+            MainColorPositionY = 100;
+            MainColorWidth = 20;
+            MainColor = '#FF0000';
+            imgElem.src = 'images/orange.png'
+            switchColor = '#FFA500'
+            
+            imgElem.addEventListener('load',()=>{
+                ctx.drawImage(imgElem, 400, 50, 100, 100);
+            });
 
+            ctx.beginPath();
+            ctx.fillStyle = '#FF0000';
+            ctx.fillRect(300, 0, 20, 200);
+
+            ctx.beginPath();
+            ctx.fillStyle = '#FFDC37';
+            ctx.fillRect(300, 200, 20, 200);
+
+            ctx.beginPath();
+            ctx.fillStyle = MainColor;
+            ctx.arc(MainColorPositionX, MainColorPositionY, MainColorWidth, 0, Math.PI*2, false);
+            ctx.fill();
         }
-
 
         function upHandler(e){
             colorSwitch = false;
+            drawingMode = false;
         }
         function downHandler(e){
             console.log('X',e.layerX)
             console.log('Y',e.layerY)
             if(currentStage == 'start' 
+            && e.layerX >= 250 && e.layerX < 350
+            && e.layerY >= 200 && e.layerY < 230){
+                currentStage = 'stage1'
+                stage1()
+            }else if(currentStage == 'failed' 
             && e.layerX >= 250 && e.layerX < 350
             && e.layerY >= 200 && e.layerY < 230){
                 currentStage = 'stage1'
@@ -170,21 +204,19 @@
             ctx.beginPath();
             ctx.arc(e.layerX, e.layerY, 10, 0, Math.PI*2, false);
             ctx.fill();
-            if(currentStage == 'stage1'){
-                if(colorSwitch){
-                    ctx.fillStyle = "#52E252"
-                }
-                if(e.layerX == 300 && e.layerY >= 200){
-                    colorSwitch = true;
-                }
-                if(colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
-                    clear()
-                    drawingMode = false;
-                }
-                if(!colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
-                    failed()
-                    drawingMode = false;
-                }
+            if(colorSwitch){
+                ctx.fillStyle = switchColor
+            }
+            if(e.layerX >= 300 && e.layerX< 320 && e.layerY >= 200){
+                colorSwitch = true;
+            }
+            if(colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
+                clear()
+                drawingMode = false;
+            }
+            if(!colorSwitch && e.layerX >= 420 && e.layerX < 480 && e.layerY <= 120 && e.layerY > 80){
+                failed()
+                drawingMode = false;
             }
         }
         canvas.addEventListener('mousedown', downHandler);
